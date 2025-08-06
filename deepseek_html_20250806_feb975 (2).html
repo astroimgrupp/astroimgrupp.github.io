@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор материалов из м³ в штуки</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            text-align: center;
+            padding: 25px;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f1f1f1;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-btn i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .tab-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .tab-btn.active {
+            background: #fff;
+            color: #2c3e50;
+            border-bottom: 4px solid #3498db;
+        }
+        
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+        }
+        
+        .result-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .highlight {
+            color: #e74c3c;
+            font-size: 2rem;
+        }
+        
+        .material-info {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #34495e;
+        }
+        
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f1f1f1;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tab-btn {
+                padding: 15px 10px;
+                font-size: 1rem;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+            
+            .result-text {
+                font-size: 1.2rem;
+            }
+            
+            .highlight {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Калькулятор материалов</h1>
+            <div class="subtitle">Перевод объёма (м³) в количество штук</div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="blocks">
+                <i class="fas fa-cubes"></i> Строительные блоки
+            </button>
+            <button class="tab-btn" data-tab="foam">
+                <i class="fas fa-layer-group"></i> Пенопласт
+            </button>
+        </div>
+        
+        <!-- Вкладка для блоков -->
+        <div id="blocks-tab" class="tab-content active">
+            <div class="input-group">
+                <label for="block-type"><i class="fas fa-ruler-combined"></i> Выберите тип блока:</label>
+                <select id="block-type">
+                    <option value="625,300,200">Блок 625x300x200 мм</option>
+                    <option value="625,100,250">Блок 625x100x250 мм</option>
+                    <option value="625,150,250">Блок 625x150x250 мм</option>
+                    <option value="600,300,200">Блок 600x300x200 мм</option>
+                    <option value="625,100,300">Блок 625x100x300 мм</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="block-volume"><i class="fas fa-cube"></i> Объём в кубических метрах (м³):</label>
+                <input type="number" id="block-volume" min="0" step="0.01" placeholder="Введите объём" value="1">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateBlocks()">
+                <i class="fas fa-calculator"></i> Рассчитать количество
+            </button>
+            
+            <div id="block-result" class="result-container">
+                <div class="result-text">Результат: <span class="highlight" id="block-result-value">0</span> штук</div>
+            </div>
+            
+            <div class="material-info">
+                <div class="info-title"><i class="fas fa-info-circle"></i> О материале</div>
+                <p>Строительные блоки - популярный материал для возведения стен. Размеры указаны в миллиметрах: длина × ширина × высота. Для расчета количество штук в кубическом метре учитывается объем одного блока.</p>
+            </div>
+        </div>
+        
+        <!-- Вкладка для пенопласта -->
+        <div id="foam-tab" class="tab-content">
+            <div class="input-group">
+                <label for="foam-type"><i class="fas fa-ruler-combined"></i> Выберите тип пенопласта:</label>
+                <select id="foam-type">
+                    <option value="1000,500,20">ППТ-15Н-А-Р 1000x500x20 мм</option>
+                    <option value="1000,500,30">ППТ-15Н-А-Р 1000x500x30 мм</option>
+                    <option value="1000,500,50">ППТ-15Н-А-Р 1000x500x50 мм</option>
+                    <option value="1000,500,20">ППТ-20Н-А-Р 1000x500x20 мм</option>
+                    <option value="1000,500,30">ППТ-20Н-А-Р 1000x500x30 мм</option>
+                    <option value="1000,500,50">ППТ-20Н-А-Р 1000x500x50 мм</option>
+                    <option value="1000,500,20">ППТ-25Н-А-Р 1000x500x20 мм</option>
+                    <option value="1000,500,30">ППТ-25Н-А-Р 1000x500x30 мм</option>
+                    <option value="1000,500,50">ППТ-25Н-А-Р 1000x500x50 мм</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label for="foam-volume"><i class="fas fa-cube"></i> Объём в кубических метрах (м³):</label>
+                <input type="number" id="foam-volume" min="0" step="0.01" placeholder="Введите объём" value="1">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateFoam()">
+                <i class="fas fa-calculator"></i> Рассчитать количество
+            </button>
+            
+            <div id="foam-result" class="result-container">
+                <div class="result-text">Результат: <span class="highlight" id="foam-result-value">0</span> штук</div>
+            </div>
+            
+            <div class="material-info">
+                <div class="info-title"><i class="fas fa-info-circle"></i> О материале</div>
+                <p>Пенопласт ППТ - экструдированный пенополистирол, применяемый для теплоизоляции. Маркировка (15, 20, 25) обозначает плотность материала в кг/м³. Размеры указаны в миллиметрах: длина × ширина × толщина.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 Калькулятор материалов | Переведите объём в количество штук за секунды!</p>
+        </footer>
+    </div>
+
+    <script>
+        // Переключение вкладок
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Удаляем активный класс со всех кнопок и контента
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Добавляем активный класс к текущей кнопке
+                button.classList.add('active');
+                
+                // Показываем соответствующий контент
+                const tabId = button.getAttribute('data-tab') + '-tab';
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Расчет для блоков
+        function calculateBlocks() {
+            const blockType = document.getElementById('block-type').value;
+            const volumeInput = document.getElementById('block-volume').value;
+            const volume = parseFloat(volumeInput);
+            
+            // Проверка ввода
+            if (volumeInput === '' || isNaN(volume) || volume <= 0) {
+                document.getElementById('block-result').classList.remove('active');
+                return;
+            }
+            
+            const dimensions = blockType.split(',').map(Number);
+            // Рассчитываем объем одного блока в м³
+            const pieceVolume = (dimensions[0] * dimensions[1] * dimensions[2]) / 1000000000;
+            const pieces = volume / pieceVolume;
+            
+            document.getElementById('block-result-value').textContent = pieces.toFixed(2);
+            document.getElementById('block-result').classList.add('active');
+        }
+        
+        // Расчет для пенопласта
+        function calculateFoam() {
+            const foamType = document.getElementById('foam-type').value;
+            const volumeInput = document.getElementById('foam-volume').value;
+            const volume = parseFloat(volumeInput);
+            
+            // Проверка ввода
+            if (volumeInput === '' || isNaN(volume) || volume <= 0) {
+                document.getElementById('foam-result').classList.remove('active');
+                return;
+            }
+            
+            const dimensions = foamType.split(',').map(Number);
+            // Рассчитываем объем одного листа пенопласта в м³
+            const pieceVolume = (dimensions[0] * dimensions[1] * dimensions[2]) / 1000000000;
+            const pieces = volume / pieceVolume;
+            
+            document.getElementById('foam-result-value').textContent = pieces.toFixed(2);
+            document.getElementById('foam-result').classList.add('active');
+        }
+        
+        // Автоматический расчет при изменении значений
+        document.getElementById('block-volume').addEventListener('input', calculateBlocks);
+        document.getElementById('foam-volume').addEventListener('input', calculateFoam);
+        document.getElementById('block-type').addEventListener('change', calculateBlocks);
+        document.getElementById('foam-type').addEventListener('change', calculateFoam);
+        
+        // Инициализация при загрузке (без вызова alert)
+        window.onload = function() {
+            // Установим начальные значения
+            document.getElementById('block-volume').value = '1';
+            document.getElementById('foam-volume').value = '1';
+            
+            // Выполним расчеты без показа ошибок
+            calculateBlocks();
+            calculateFoam();
+        };
+    </script>
+</body>
+</html>
